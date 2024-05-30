@@ -1,0 +1,34 @@
+<!-- room.hbs -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chatroom | {{roomName}}</title>
+</head>
+<body>
+  <h2>Welcome to Chatroom: {{roomName}}</h2>
+  <div id="messages">
+    {{#each messages}}
+      <div class="message">
+        <strong>{{this.nickname}}:</strong> {{this.text}} <small>{{moment this.time format="hh:mm:ss A"}}</small>
+      </div>
+    {{/each}}
+  </div>
+  <form action="/{{roomName}}/messages" method="post">
+    <input type="text" name="nickname" placeholder="Your nickname" required>
+    <input type="text" name="message" placeholder="Type a message" required>
+    <button type="submit">Send</button>
+  </form>
+  <script>
+    setInterval(function() {
+      fetch('/{{roomName}}/messages')
+        .then(response => response.json())
+        .then(messages => {
+          const messageElements = messages.map(msg => 
+            `<div class="message"><strong>${msg.nickname}:</strong> ${msg.text} <small>${moment(msg.time).fromNow()}</small></div>`
+          );
+          document.getElementById('messages').innerHTML = messageElements.join('');
+        });
+    }, 3000);
+  </script>
+</body>
+</html>

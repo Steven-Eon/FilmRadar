@@ -1,0 +1,19 @@
+<!-- home.hbs -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Home | Chatrooms</title>
+</head>
+<body>
+  <h1>Welcome to the Chatroom Application!</h1>
+  <ul>
+    {{#each chatrooms}}
+      <li><a href="/{{this.name}}">{{this.name}}</a></li>
+    {{/each}}
+  </ul>
+  <form action="/create" method="post">
+    <input type="text" name="roomName" placeholder="Enter a room name or leave blank for a random ID">
+    <button type="submit">Create New Chatroom</button>
+  </form>
+</body>
+</html>

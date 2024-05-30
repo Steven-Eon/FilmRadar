@@ -1,0 +1,98 @@
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Header and Titles */
+h1, h2 {
+    color: #0056b3;
+}
+
+/* Chatroom List and Links */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 8px;
+    margin-bottom: 5px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+}
+
+ul li a {
+    text-decoration: none;
+    color: #0056b3;
+    display: block;
+}
+
+ul li a:hover {
+    background-color: #eee;
+}
+
+/* Forms for creating and sending messages */
+form {
+    margin-top: 20px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+input[type="text"], button {
+    padding: 10px;
+    margin: 5px;
+    display: block;
+    width: 95%;
+}
+
+button {
+    cursor: pointer;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+}
+
+button:hover {
+    background-color: #004494;
+}
+
+/* Message Container */
+#messages {
+    margin-top: 20px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    height: 300px;  /* Fixed height with scrolling */
+    overflow-y: scroll;
+}
+
+.message {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.message:last-child {
+    border-bottom: none;
+}
+
+.message strong {
+    color: #007bff;
+}
+
+.message small {
+    float: right;
+    color: #666;
+}
+
+/* Utility Classes */
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
