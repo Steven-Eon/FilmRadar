@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const hbs = require('express-handlebars');
 const path = require('path');
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
 let uri = "mongodb+srv://chatroomadmin:AJSodjlaj03hrtj20hnASOPdhj@cluster0.2bkhbpv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/util', express.static('./util'));
 
 // If you choose not to use handlebars as template engine, you can safely delete the following part and use your own way to render content
 // view engine setup
@@ -101,6 +103,50 @@ app.get('/room/:roomName/messages', async (req, res) => {
     catch (e) {
         return res.status(500).send("Error connecting to database").end();
     }
+})
+
+app.post('/room/:roomName/', async (req, res) => {
+    try{
+        await mongoose.connect(uri);
+    }
+    catch(e) {
+        return res.status(500).send("Error connecting to database").end();
+    }
+
+
+    console.log(req.params.roomName)
+    let body = req.body;
+    let Message;
+    let time = moment().format('h:mm a');
+
+    if (!mongoose.models[req.params.roomName]) 
+    {
+        const messageModel = new mongoose.Schema({userName: String, message: String, time: String}, {collection: req.params.roomName});
+        Message = mongoose.model(req.params.roomName, messageModel);
+    }
+    else
+    {
+        Message = mongoose.model(req.params.roomName)
+    }
+
+    const sentMessage = new Message({userName: body.userName, message: body.message, time: time});
+    
+    try{
+        await sentMessage.save();
+    }
+    catch(e) {
+        return res.status(500).send("Error saving to database").end();
+    }
+
+
+    console.log(body, time);
+
+    
+    mongoose.connection.close();
+
+
+    
+    return res.status(200).end();;
 })
 
 // Create controller handlers to handle requests at each endpoint
