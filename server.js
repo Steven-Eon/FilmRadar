@@ -94,59 +94,55 @@ app.post('/new', async (req, res) => {
 
 app.get('/room/:roomName/messages', async (req, res) => {
     const roomName = req.params.roomName;
+    // console.log("Requested." + req.params.roomName)
 
     try {
         await mongoose.connect(uri);
-        
-
+        const collection = await mongoose.connection.db.collection(req.params.roomName)
+        const results = await collection.find().toArray();
+        mongoose.connection.close();
+        res.json(results);
     }
     catch (e) {
+        mongoose.connection.close();
         return res.status(500).send("Error connecting to database").end();
     }
 })
 
-app.post('/room/:roomName/', async (req, res) => {
+app.post('/room/:roomName', async (req, res) => {
+    let body = req.body;
+    let Message;
+    let time = moment().format('h:mm a');
+    
     try{
         await mongoose.connect(uri);
+        if (!mongoose.models[req.params.roomName]) 
+        {
+            const messageModel = new mongoose.Schema({userName: String, message: String, time: String}, {collection: req.params.roomName});
+            Message = mongoose.model(req.params.roomName, messageModel);
+        }
+        else
+        {
+            Message = mongoose.model(req.params.roomName)
+        }
+    
+        const sentMessage = new Message({userName: body.userName, message: body.message, time: time});
+    
+        console.log(body, time);
+        await sentMessage.save();
+        mongoose.connection.close();
+        return res.status(200).end();;
     }
     catch(e) {
         return res.status(500).send("Error connecting to database").end();
     }
 
-
-    console.log(req.params.roomName)
-    let body = req.body;
-    let Message;
-    let time = moment().format('h:mm a');
-
-    if (!mongoose.models[req.params.roomName]) 
-    {
-        const messageModel = new mongoose.Schema({userName: String, message: String, time: String}, {collection: req.params.roomName});
-        Message = mongoose.model(req.params.roomName, messageModel);
-    }
-    else
-    {
-        Message = mongoose.model(req.params.roomName)
-    }
-
-    const sentMessage = new Message({userName: body.userName, message: body.message, time: time});
     
-    try{
-        await sentMessage.save();
-    }
-    catch(e) {
-        return res.status(500).send("Error saving to database").end();
-    }
-
-
-    console.log(body, time);
-
     
-    mongoose.connection.close();
 
 
     
-    return res.status(200).end();;
+    
 })
 
 // Create controller handlers to handle requests at each endpoint
