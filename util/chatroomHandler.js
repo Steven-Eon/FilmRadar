@@ -41,5 +41,5 @@ let refresh = setInterval(async () => {
     catch (e) {
         console.log(e);
     }
-}, 5000)
+}, 3000)
 

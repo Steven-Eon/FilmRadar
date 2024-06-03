@@ -69,7 +69,6 @@ app.get('/data/', async (req, res) => {
 app.post('/new', async (req, res) => {
     const params = req.body;
     try {
-        await mongoose.connect(uri);
         const roomId = new mongoose.Schema({roomId: String}, {collection: 'roomId'});
         console.log("Connected to database");
         const roomIdModel = mongoose.model('roomId', roomId);
@@ -82,8 +81,6 @@ app.post('/new', async (req, res) => {
             const newRoom = new roomIdModel({roomId: params.roomId});
             await newRoom.save();
         }
-
-        mongoose.connection.close();
         res.redirect("/room/" + params.roomId);
         return res.end();
     }
@@ -97,14 +94,11 @@ app.get('/room/:roomName/messages', async (req, res) => {
     // console.log("Requested." + req.params.roomName)
 
     try {
-        await mongoose.connect(uri);
         const collection = await mongoose.connection.db.collection(req.params.roomName)
         const results = await collection.find().toArray();
-        mongoose.connection.close();
         res.json(results);
     }
     catch (e) {
-        mongoose.connection.close();
         return res.status(500).send("Error connecting to database").end();
     }
 })
@@ -115,7 +109,6 @@ app.post('/room/:roomName', async (req, res) => {
     let time = moment().format('h:mm a');
     
     try{
-        await mongoose.connect(uri);
         if (!mongoose.models[req.params.roomName]) 
         {
             const messageModel = new mongoose.Schema({userName: String, message: String, time: String}, {collection: req.params.roomName});
@@ -129,8 +122,14 @@ app.post('/room/:roomName', async (req, res) => {
         const sentMessage = new Message({userName: body.userName, message: body.message, time: time});
     
         console.log(body, time);
-        await sentMessage.save();
-        mongoose.connection.close();
+        try {
+            await sentMessage.save();
+        }
+        catch(error) {
+            console.log(error)
+        }
+        
+        
         return res.status(200).end();;
     }
     catch(e) {
@@ -152,4 +151,8 @@ app.get('/new', newHandler.getNew);
 
 // NOTE: This is the sample server.js code we provided, feel free to change the structures
 
-app.listen(port, () => console.log(`Server listening on http://localhost:${port}`));
+app.listen(port, async () => 
+    {
+        await mongoose.connect(uri);
+        console.log(`Server listening on http://localhost:${port}`)}
+    );
