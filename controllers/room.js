@@ -1,6 +1,6 @@
 async function getRoom(req, res) {
-    const roomName = "TEST"
-    res.render('room', {roomName: 'roomName', newRoomId: 'newRoomId'})
+    const roomName = req.params.roomName;
+    res.render('room', {roomName: roomName})
 }
 
 module.exports = {

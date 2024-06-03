@@ -41,6 +41,7 @@ app.set('view engine', 'hbs');
 
 
 
+
 // TODO: Add server side code
 app.get('/data/', async (req, res) => {
     const query = {roomId: {$exists: true}}
@@ -87,12 +88,19 @@ app.post('/new', async (req, res) => {
     catch (e) {
         return res.status(500).send("Error connecting to database").end();
     }
-    
+})
 
-    
+app.get('/room/:roomName/messages', async (req, res) => {
+    const roomName = req.params.roomName;
 
+    try {
+        await mongoose.connect(uri);
+        
 
-    
+    }
+    catch (e) {
+        return res.status(500).send("Error connecting to database").end();
+    }
 })
 
 // Create controller handlers to handle requests at each endpoint
