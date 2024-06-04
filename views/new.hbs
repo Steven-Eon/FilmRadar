@@ -8,7 +8,7 @@
             <form method="post" action="/new">
                 <div>
                     <label for="roomId">Room ID: </label>
-                    <input required placeholder="Max of 10 characters." class="inputNewChat" type="text" maxlength="10" id="roomId" name="roomId"/> 
+                    <input required placeholder="Input an unique 6 character ID." class="inputNewChat" type="text" minlength='6' maxlength="6" id="roomId" name="roomId"/> 
                 </div>
                 <div>
                     <button type="submit" class="button rounded-md  bg-blue-300 px-0.5 py-0.5 hover:bg-blue-400">Create!</button>

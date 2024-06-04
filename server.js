@@ -69,10 +69,18 @@ app.get('/data/', async (req, res) => {
 app.post('/new', async (req, res) => {
     const params = req.body;
     try {
-        const roomId = new mongoose.Schema({roomId: String}, {collection: 'roomId'});
+        let roomId, roomIdModel
         console.log("Connected to database");
-        const roomIdModel = mongoose.model('roomId', roomId);
+        if (!mongoose.models['roomId']) {
+            roomId = new mongoose.Schema({roomId: String}, {collection: 'roomId'});
+            roomIdModel = mongoose.model('roomId', roomId);
+        }
+        else {
+            roomIdModel = mongoose.model('roomId');
+        }
+        
         const roomExists = await roomIdModel.exists({roomId: params.roomId});
+        console.log(roomExists)
         if (roomExists) {
             res.redirect('/room/' + params.roomId);
             return res.end();
@@ -106,7 +114,7 @@ app.get('/room/:roomName/messages', async (req, res) => {
 app.post('/room/:roomName', async (req, res) => {
     let body = req.body;
     let Message;
-    let time = moment().format('h:mm a');
+    let time = moment().calendar();
     
     try{
         if (!mongoose.models[req.params.roomName]) 
