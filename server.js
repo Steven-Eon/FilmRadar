@@ -21,6 +21,8 @@ const client = new MongoClient(uri, {
 const homeHandler = require('./controllers/home.js');
 const roomHandler = require('./controllers/room.js');
 const newHandler = require('./controllers/new.js');
+const rootHandler = require('./controllers/root.js')
+const signupHandler = require('./controllers/signup.js')
 const { Server } = require('http');
 const e = require('express');
 
@@ -39,33 +41,15 @@ app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'layout', layoutsDir: __di
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-// set up stylesheets route
+// Create controller handlers to handle requests at each endpoint
+app.get('/', rootHandler.getRoot);
+app.post('/', rootHandler.signIn);
 
+app.get('/signup', signupHandler.signUp);
+app.post('/signup', signupHandler.submit)
 
-
-
-// TODO: Add server side code
-app.get('/data/', async (req, res) => {
-    const query = {roomId: {$exists: true}}
-    try {
-        await client.connect();
-        const database = client.db('test');
-
-        console.log("Connected to database");
-        
-        return database.collection('roomId').find(query, {"_id": 0,"roomId": 1})
-            .sort({roomId: 1})
-            .toArray()
-            .then((result) => {
-                client.close();
-                res.status(200).send(JSON.stringify(result)).end();
-            })
-    }
-    catch(e) {
-        return res.status(500).send("Error connecting to database").end();
-    }
-})
-
+app.get('/home', homeHandler.getHome);
+app.get('/new', newHandler.getNew);
 app.post('/new', async (req, res) => {
     const params = req.body;
     try {
@@ -89,20 +73,29 @@ app.post('/new', async (req, res) => {
     }
 })
 
-app.get('/room/:roomName/messages', async (req, res) => {
-    const roomName = req.params.roomName;
-    // console.log("Requested." + req.params.roomName)
-
+app.get('/data/', async (req, res) => {
+    const query = {roomId: {$exists: true}}
     try {
-        const collection = await mongoose.connection.db.collection(req.params.roomName)
-        const results = await collection.find().toArray();
-        res.json(results);
+        await client.connect();
+        const database = client.db('test');
+
+        console.log("Connected to database");
+        
+        return database.collection('roomId').find(query, {"_id": 0,"roomId": 1})
+            .sort({roomId: 1})
+            .toArray()
+            .then((result) => {
+                client.close();
+                res.status(200).send(JSON.stringify(result)).end();
+            })
     }
-    catch (e) {
+    catch(e) {
         return res.status(500).send("Error connecting to database").end();
     }
 })
 
+
+app.get('/room/:roomName', roomHandler.getRoom);
 app.post('/room/:roomName', async (req, res) => {
     let body = req.body;
     let Message;
@@ -136,20 +129,20 @@ app.post('/room/:roomName', async (req, res) => {
         return res.status(500).send("Error connecting to database").end();
     }
 
-    
-    
-
-
-    
-    
 })
+app.get('/room/:roomName/messages', async (req, res) => {
+    const roomName = req.params.roomName;
+    // console.log("Requested." + req.params.roomName)
 
-// Create controller handlers to handle requests at each endpoint
-app.get('/', homeHandler.getHome);
-app.get('/room/:roomName', roomHandler.getRoom);
-app.get('/new', newHandler.getNew);
-
-// NOTE: This is the sample server.js code we provided, feel free to change the structures
+    try {
+        const collection = await mongoose.connection.db.collection(req.params.roomName)
+        const results = await collection.find().toArray();
+        res.json(results);
+    }
+    catch (e) {
+        return res.status(500).send("Error connecting to database").end();
+    }
+})
 
 app.listen(port, async () => 
     {

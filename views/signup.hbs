@@ -1,0 +1,26 @@
+<body class="bg-slate-500 flex flex-col justify-center items-center h-screen">
+
+    <h1 class="text-4xl mb-5">FilmRadar</h1>
+
+    <div class="bg-slate-100 bg-opacity-10 p-8 rounded-lg shadow-md w-96">
+
+        <p class="text-2xl font-bold mb-4 text-white text-center">Sign Up</p>
+
+        <form action="/signup" method="post" class="flex flex-col items-center space-y-4">
+            <input type="text" name="username" id="username" placeholder="Username" required
+                   class="bg-transparent border border-white rounded-lg py-2 px-4 text-white w-full focus:outline-none focus:border-blue-800">
+            <input type="password" name="password" id="password" placeholder="Password" required
+                   class="bg-transparent border border-white rounded-lg py-2 px-4 text-white w-full focus:outline-none focus:border-blue-800">
+            <input type="text" name="firstName" id="firstName" placeholder="First Name" required
+                   class="bg-transparent border border-white rounded-lg py-2 px-4 text-white w-full focus:outline-none focus:border-blue-800">
+
+            <input type="text" name="lastName" id="lastName" placeholder="Last Name" required
+                   class="bg-transparent border border-white rounded-lg py-2 px-4 text-white w-full focus:outline-none focus:border-blue-800">
+
+            <input type="submit" value="Sign Up" class="bg-white border border-white rounded-lg py-2 px-4 w-full hover:cursor-pointer hover:bg-blue-400 hover:border-blue-400 hover:text-white">
+        </form>
+
+        <a href="/" class="text-black text-center">Already have an account? Click Here!</a>
+    </div>
+
+</body>
