@@ -21,23 +21,21 @@ const client = new MongoClient(uri, {
 const homeHandler = require('./controllers/home.js');
 const roomHandler = require('./controllers/room.js');
 const newHandler = require('./controllers/new.js');
-const rootHandler = require('./controllers/root.js')
-const signupHandler = require('./controllers/signup.js')
-const { Server } = require('http');
-const e = require('express');
+const rootHandler = require('./controllers/root.js');
+const signupHandler = require('./controllers/signup.js');
 
 const app = express();
 const port = 8080;
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/util', express.static('./util'));
 
 // If you choose not to use handlebars as template engine, you can safely delete the following part and use your own way to render content
 // view engine setup
-app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'layout', layoutsDir: __dirname + '/views/layouts/'}));
+app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'layout', layoutsDir: __dirname + '/views/layouts/' }));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
@@ -45,107 +43,86 @@ app.set('view engine', 'hbs');
 app.get('/', rootHandler.getRoot);
 app.post('/', rootHandler.signIn);
 
+app.post('/verify', rootHandler.verify);
+
 app.get('/signup', signupHandler.signUp);
-app.post('/signup', signupHandler.submit)
+app.post('/signup', signupHandler.submit);
 
 app.get('/home', homeHandler.getHome);
 app.get('/new', newHandler.getNew);
 app.post('/new', async (req, res) => {
     const params = req.body;
     try {
-        const roomId = new mongoose.Schema({roomId: String}, {collection: 'roomId'});
-        console.log("Connected to database");
-        const roomIdModel = mongoose.model('roomId', roomId);
-        const roomExists = await roomIdModel.exists({roomId: params.roomId});
+        const roomIdSchema = new mongoose.Schema({ roomId: String }, { collection: 'roomId' });
+        const roomIdModel = mongoose.model('roomId', roomIdSchema);
+        const roomExists = await roomIdModel.exists({ roomId: params.roomId });
         if (roomExists) {
-            res.redirect('/room/' + params.roomId);
-            return res.end();
-        }
-        else {
-            const newRoom = new roomIdModel({roomId: params.roomId});
+            return res.redirect('/room/' + params.roomId);
+        } else {
+            const newRoom = new roomIdModel({ roomId: params.roomId });
             await newRoom.save();
+            return res.redirect('/room/' + params.roomId);
         }
-        res.redirect("/room/" + params.roomId);
-        return res.end();
-    }
-    catch (e) {
+    } catch (e) {
+        console.error("Error connecting to database", e);
         return res.status(500).send("Error connecting to database").end();
     }
-})
+});
 
 app.get('/data/', async (req, res) => {
-    const query = {roomId: {$exists: true}}
+    const query = { roomId: { $exists: true } };
     try {
         await client.connect();
         const database = client.db('test');
-
-        console.log("Connected to database");
-        
-        return database.collection('roomId').find(query, {"_id": 0,"roomId": 1})
-            .sort({roomId: 1})
-            .toArray()
-            .then((result) => {
-                client.close();
-                res.status(200).send(JSON.stringify(result)).end();
-            })
-    }
-    catch(e) {
+        const results = await database.collection('roomId').find(query, { "_id": 0, "roomId": 1 }).sort({ roomId: 1 }).toArray();
+        await client.close();
+        res.status(200).json(results).end();
+    } catch (e) {
+        console.error("Error connecting to database", e);
         return res.status(500).send("Error connecting to database").end();
     }
-})
-
+});
 
 app.get('/room/:roomName', roomHandler.getRoom);
 app.post('/room/:roomName', async (req, res) => {
     let body = req.body;
-    let Message;
     let time = moment().format('h:mm a');
-    
-    try{
-        if (!mongoose.models[req.params.roomName]) 
-        {
-            const messageModel = new mongoose.Schema({userName: String, message: String, time: String}, {collection: req.params.roomName});
-            Message = mongoose.model(req.params.roomName, messageModel);
-        }
-        else
-        {
-            Message = mongoose.model(req.params.roomName)
-        }
-    
-        const sentMessage = new Message({userName: body.userName, message: body.message, time: time});
-    
-        console.log(body, time);
-        try {
-            await sentMessage.save();
-        }
-        catch(error) {
-            console.log(error)
-        }
-        
-        
-        return res.status(200).end();;
-    }
-    catch(e) {
-        return res.status(500).send("Error connecting to database").end();
-    }
-
-})
-app.get('/room/:roomName/messages', async (req, res) => {
-    const roomName = req.params.roomName;
-    // console.log("Requested." + req.params.roomName)
 
     try {
-        const collection = await mongoose.connection.db.collection(req.params.roomName)
-        const results = await collection.find().toArray();
-        res.json(results);
-    }
-    catch (e) {
+        let Message;
+        if (!mongoose.models[req.params.roomName]) {
+            const messageSchema = new mongoose.Schema({ userName: String, message: String, time: String }, { collection: req.params.roomName });
+            Message = mongoose.model(req.params.roomName, messageSchema);
+        } else {
+            Message = mongoose.model(req.params.roomName);
+        }
+
+        const sentMessage = new Message({ userName: body.userName, message: body.message, time: time });
+        await sentMessage.save();
+        return res.status(200).end();
+    } catch (e) {
+        console.error("Error connecting to database", e);
         return res.status(500).send("Error connecting to database").end();
     }
-})
+});
 
-app.listen(port, async () => 
-    {
-        await mongoose.connect(uri);
-        console.log(`Server listening on http://localhost:${port}`)}
-    );
+app.get('/room/:roomName/messages', async (req, res) => {
+    const roomName = req.params.roomName;
+    try {
+        const collection = mongoose.connection.db.collection(roomName);
+        const results = await collection.find().toArray();
+        res.json(results);
+    } catch (e) {
+        console.error("Error connecting to database", e);
+        return res.status(500).send("Error connecting to database").end();
+    }
+});
+
+app.listen(port, async () => {
+    try {
+        await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        console.log(`Server listening on http://localhost:${port}`);
+    } catch (e) {
+        console.error("Error connecting to MongoDB", e);
+    }
+});
