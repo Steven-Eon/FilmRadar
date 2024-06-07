@@ -121,8 +121,7 @@ app.post('/room/:roomName', async (req, res) => {
         catch(error) {
             console.log(error)
         }
-        
-        
+    
         return res.status(200).end();;
     }
     catch(e) {

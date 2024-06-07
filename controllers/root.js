@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 async function getRoot(req, res){
     res.render('root');
@@ -9,18 +10,16 @@ async function signIn(req, res){
         const {username, password} = req.body;
 
         const user = await User.findOne({username});
+        const isCorrect = await bcrypt.compare(password, user?.password || '');
 
-        if(!user){
-            // res.status(200).json({message: "User not found!"})
+        if (!isCorrect || !user) {
+            console.log("Wrong username or password");
             res.redirect('/');
         }
-        else if(user.password !== password){
-            res.status(401).json({error: "Invalid password!"});
-        }
-        else{
+        else {
+            console.log("Login successful");
             res.redirect('/home');
         }
-        
         
    }catch (error) {
         console.log("Error: ", error)
