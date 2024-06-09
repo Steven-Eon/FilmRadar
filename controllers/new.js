@@ -1,7 +1,7 @@
 async function getNew(req, res) {
-    res.render('new');
+  res.render("new");
 }
 
 module.exports = {
-    getNew
+  getNew,
 };
