@@ -62,19 +62,41 @@
       </div>
       <div>
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" value="{{password}}">
+        <input 
+        type="password" 
+        id="password" 
+        name="password" 
+        value="{{password}}" 
+        pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+        title="Password must be at least eight characters long, with at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)"
+        >
       </div>
       <div>
         <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" name="firstName" value="{{firstName}}">
+        <input 
+        type="text" 
+        id="firstName" 
+        name="firstName" 
+        value="{{firstName}}"
+        >
       </div>
       <div>
         <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" value="{{lastName}}">
+        <input 
+        type="text" 
+        id="lastName" 
+        name="lastName" 
+        value="{{lastName}}"
+        >
       </div>
       <div>
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="{{email}}" readonly>
+        <input 
+        type="email" 
+        id="email" 
+        name="email" 
+        value="{{email}}" readonly
+        >
       </div>
       <button type="submit">Update Profile</button>
     </form>
