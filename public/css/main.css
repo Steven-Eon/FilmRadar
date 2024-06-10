@@ -4,69 +4,70 @@
 @tailwind utilities;
 
 * {
-    font-family: "Reddit Mono", monospace, 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+  font-family: "Reddit Mono", monospace, "Franklin Gothic Medium",
+    "Arial Narrow", Arial, sans-serif;
 }
 
 body {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .button {
-    border-color: black;
-    border-width: 1px;
-    border-radius: 0.375rem;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 0.375rem;
 }
 
 .inputNewChat {
-    border-color: black;
-    border-width: 0.5px;
-    border-radius: 0.15rem;
+  border-color: black;
+  border-width: 0.5px;
+  border-radius: 0.15rem;
 }
 
 .mainContainer {
-    height: 100vh;
-    width: 100vw;
+  height: 100vh;
+  width: 100vw;
 }
 
 .chatContainer {
-    height: 80%;
-    width: 95%;
-    border: 1px solid black;
+  height: 80%;
+  width: 95%;
+  border: 1px solid black;
 }
 
 #message {
-    width: 70vw;
-    height: 10vh;
-    font-size: 1em;
-    resize: none;
-    border: 0.5px solid black;
+  width: 70vw;
+  height: 10vh;
+  font-size: 0.5em;
+  resize: none;
+  border: 0.5px solid black;
 }
 
 .halfSize {
-    max-width: 50%;
+  max-width: 50%;
 }
 
 .messageBox {
-    display: flex;
-    flex-direction: column;
-    align-self: center;
-    height: auto;
-    width: 80%;
-    border-bottom: 1px rgba(0,0,0,0.20) solid
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  height: auto;
+  width: 80%;
+  border-bottom: 1px rgba(0, 0, 0, 0.2) solid;
 }
 
 .messageBoxName {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .time {
-    opacity: 50%;
+  opacity: 50%;
 }
 
 #chatContent {
-    overflow: scroll;
-    flex-direction: column-reverse;
+  overflow: scroll;
+  flex-direction: column-reverse;
 }
