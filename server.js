@@ -111,6 +111,7 @@ app.get("/data/", async (req, res) => {
 
 app.get("/room/:roomName", roomHandler.getRoom);
 app.post("/room/:roomName", async (req, res) => {
+  
   let body = req.body;
   let Message;
   let time = moment().format("h:mm a");
@@ -118,7 +119,7 @@ app.post("/room/:roomName", async (req, res) => {
   try {
     if (!mongoose.models[req.params.roomName]) {
       const messageModel = new mongoose.Schema(
-        { userName: String, message: String, time: String },
+        { messageId: Number, userName: String, message: String, time: String },
         { collection: req.params.roomName }
       );
       Message = mongoose.model(req.params.roomName, messageModel);
@@ -126,13 +127,22 @@ app.post("/room/:roomName", async (req, res) => {
       Message = mongoose.model(req.params.roomName);
     }
 
+    // console.log("Test" + Message.countDocuments());
+    
+    const id = await Message.countDocuments();
+    
+    console.log(id);
+    
+
+  
     const sentMessage = new Message({
+      messageId: id,
       userName: body.userName,
       message: body.message,
       time: time,
     });
 
-    console.log(body, time);
+    console.log(sentMessage, time);
     try {
       await sentMessage.save();
     } catch (error) {

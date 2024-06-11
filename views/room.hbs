@@ -1,7 +1,7 @@
 <body class="bg-slate-100">
   <div class="mainContainer flex flex-col items-center">
     <div class="flex flex-row">
-      <a class="mx-2 hover:text-gray-400" href="http://localhost:8080/">Go Back</a>
+      <a class="mx-2 hover:text-gray-400" href="http://127.0.0.1:8080/home">Go Back</a>
       <h1 class="mx-2" id="room">{{roomName}}</h1>
     </div>
     <div
@@ -20,7 +20,7 @@
     </div>
     <div>
       <form id="messageForm" class="flex flex-row my-2 items-center">
-        <input type="hidden" id="userName" />
+        <input type="hidden" id="userName" value={{userName}} />
         <textarea
           required
           name="message"
