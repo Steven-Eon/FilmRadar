@@ -1,13 +1,11 @@
-<body class="bg-slate-500 flex flex-col justify-center items-center h-screen">
+<body class="h-screen bg-[url('https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center flex flex-col justify-center items-center">
 
   <h1 class="text-4xl mb-5">FilmRadar</h1>
 
-  <div class="bg-slate-100 bg-opacity-10 p-8 rounded-lg shadow-md w-96">
+  <div class="bg-white-300 backdrop-blur-sm p-8 rounded-lg shadow-md w-96">
 
-    <p class="text-2xl font-bold mb-4 text-white text-center">Sign Up</p>
-    {{#if message}}
-      <p class="error-message">{{message}}</p>
-    {{/if}}
+    <p class="text-2xl font-bold mb-4 text-black text-center">Sign Up</p>
+
     <form
       action="/signup"
       method="post"
@@ -76,10 +74,13 @@
       />
     </form>
 
-    <button id="google-signin" class="bg-white text-black rounded-lg py-2 px-4 mt-4 w-full hover:cursor-pointer hover:bg-gray-200">Sign in with Google</button>
+    <div class="w-full relative">
+      <button id="google-signin" class="bg-white text-black rounded-lg py-2 px-4 mt-4 w-full hover:cursor-pointer hover:bg-gray-200 text-lg" style="font-family: 'Roboto', sans-serif;">Sign in with Google</button>
+      <img src="https://static-00.iconduck.com/assets.00/google-icon-2048x2048-pks9lbdv.png" alt="google-icon" class="absolute cursor-pointer left-2" width="30px" height="30px" style="top: 23px;">
+    </div>
+    
 
-    <a href="/" class="text-black text-center hover:cursor-pointer">Already have
-      an account? Click Here!</a>
+    <a href="/" class="text-black text-center hover:cursor-pointerc inline-block w-full mt-2">Already have an account? <span class="text-blue-500">Click Here!</span></a>
   </div>
 
   <script>
