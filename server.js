@@ -25,6 +25,7 @@ const newHandler = require("./controllers/new.js");
 const rootHandler = require("./controllers/root.js");
 const signupHandler = require("./controllers/signup.js");
 const profileHandler = require("./controllers/profile.js");
+const searchHandler = require("./controllers/search.js")
 const authMiddleware = require("./util/authMiddleware");
 const { Server } = require("http");
 const e = require("express");
@@ -63,6 +64,7 @@ app.post("/signup", signupHandler.submit);
 
 app.get("/home", homeHandler.getHome);
 app.get("/new", newHandler.getNew);
+
 app.post("/new", async (req, res) => {
   const params = req.body;
   try {
@@ -119,7 +121,7 @@ app.post("/room/:roomName", async (req, res) => {
   try {
     if (!mongoose.models[req.params.roomName]) {
       const messageModel = new mongoose.Schema(
-        { messageId: Number, userName: String, message: String, time: String },
+        { messageId: String, userName: String, message: String, time: String },
         { collection: req.params.roomName }
       );
       Message = mongoose.model(req.params.roomName, messageModel);
@@ -166,6 +168,64 @@ app.get("/room/:roomName/messages", async (req, res) => {
     res.json(results);
   } catch (e) {
     return res.status(500).send("Error connecting to database").end();
+  }
+});
+
+app.put("/room/:roomName/", async (req, res) => {
+  console.log("Request received.")
+  if (!mongoose.models[req.params.roomName]) {
+    const messageModel = new mongoose.Schema(
+      { messageId: String, userName: String, message: String, time: String },
+      { collection: req.params.roomName }
+    );
+    Message = mongoose.model(req.params.roomName, messageModel);
+  } 
+  else {
+    Message = mongoose.model(req.params.roomName);
+  }
+
+  try {
+    console.log(req.body)
+    await Message.findOneAndUpdate({ 'messageId': req.body.messageId }, { 'message' : req.body.message }, { new: true })
+      .then(e => console.log(e))
+      .catch(e => console.log(e));
+    return res.status(200).send("Successfully updated.")
+  }
+  catch(e)
+  {
+    return res.status(500).send("Error connecting to database.")
+  }
+
+});
+
+app.get("/room/:roomName/search", searchHandler.getSearch)
+app.put("/room/:roomName/search", async (req, res) => {
+  console.log("Request received!")
+  try {
+    if (!mongoose.models[req.params.roomName]) {
+      const messageModel = new mongoose.Schema(
+        { messageId: String, userName: String, message: String, time: String },
+        { collection: req.params.roomName }
+      );
+      Message = mongoose.model(req.params.roomName, messageModel);
+    } 
+    else {
+      Message = mongoose.model(req.params.roomName);
+    }
+  
+    const results = await Message.find({"message" : {$regex : `${req.body.message}`}})
+    
+    const jsonFile = JSON.stringify(results)
+    console.log(jsonFile)
+
+    if (results) 
+    {
+      return res.json(jsonFile)
+    }
+    return res.send([]) 
+  }
+  catch(e) {
+    return res.status(500).send("Internal server error.")
   }
 });
 

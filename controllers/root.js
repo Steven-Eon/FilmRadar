@@ -17,6 +17,7 @@ async function signIn(req, res) {
       res.redirect("/");
     } else {
       console.log("Login successful");
+      res.cookie("email", user.email, { httpOnly: true });
       res.redirect("/home");
     }
   } catch (error) {

@@ -1,9 +1,8 @@
 <body class="bg-slate-100">
   <div class="mainContainer flex flex-col items-center">
     <div class="flex flex-row">
-      <a class="mx-2 hover:text-gray-400" href="http://127.0.0.1:8080/home">Go Back</a>
+      <a class="mx-2 hover:text-gray-400" href={{redirectURL}}>Go Back</a>
       <h1 class="mx-2" id="room">{{roomName}}</h1>
-      <a class="mx-2 hover:text-gray-400" href={{redirectAddress}}>Search!</a>
     </div>
     <div
       id="chatContent"
@@ -15,7 +14,7 @@
           <p class="time">Date</p>
         </div>
         <div class="messageBoxContent">
-          <p>Hello! Loading the chatroom now...</p>
+          <p>Search for your content here!</p>
         </div>
       </div>
     </div>
@@ -33,10 +32,10 @@
           <button
             type="submit"
             class="mx-2 border-black button px-2 py-1 hover:bg-slate-200"
-          >Send</button>
+          >Search</button>
         </div>
       </form>
     </div>
   </div>
-  <script src="http://localhost:8080/util/chatroomHandler.js" defer></script>
+  <script src="http://localhost:8080/util/searchHandler.js" defer></script>
 </body>
