@@ -1,0 +1,42 @@
+<body class="bg-slate-100">
+  <div class="mainContainer flex flex-col items-center">
+    <div class="flex flex-row">
+      <a class="mx-2 hover:text-gray-400" href="http://localhost:8080/home">Go Back</a>
+      <h1 class="mx-2" id="room">{{roomName}}</h1>
+      <a class="mx-2 hover:text-gray-400" href={{redirectAddress}}>Search!</a>
+    </div>
+    <div
+      id="chatContent"
+      class="flex flex-col self-center chatContainer border-black border-2"
+    >
+      <div class="messageBox">
+        <div class="messageBoxName">
+          <p>Username</p>
+          <p class="time">Date</p>
+        </div>
+        <div class="messageBoxContent">
+          <p>Hello! Loading the chatroom now...</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <form id="messageForm" class="flex flex-row my-2 items-center">
+        <input type="hidden" id="userName" value={{userName}} />
+        <textarea
+          required
+          name="message"
+          id="message"
+          rows="2"
+          col="23"
+        ></textarea>
+        <div>
+          <button
+            type="submit"
+            class="mx-2 border-black button px-2 py-1 hover:bg-slate-200"
+          >Send</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="http://localhost:8080/util/chatroomHandler.js" defer></script>
+</body>

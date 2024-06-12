@@ -1,0 +1,182 @@
+<body class="h-screen bg-[url('https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center flex flex-col justify-center items-center">
+
+  <h1 class="text-4xl mb-5">FilmRadar</h1>
+
+  <div class="bg-white-300 backdrop-blur-sm p-8 rounded-lg shadow-md w-96">
+
+    <p class="text-2xl font-bold mb-4 text-black text-center">Sign Up</p>
+
+    <form
+      action="/signup"
+      method="post"
+      class="flex flex-col items-center space-y-4"
+    >
+      <input
+        type="text"
+        name="username"
+        id="username"
+        placeholder="Username"
+        required
+        pattern="^[a-zA-Z0-9$\-_.]+$"
+        title="Letters, Numbers, -, _, . only!"
+        class="bg-transparent border border-white rounded-lg py-2 px-4 text-white w-full focus:outline-none focus:border-blue-800"
+      />
+
+      <div class="w-full relative">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Password"
+          required
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+          title="Password must be at least eight characters. With at least one uppercase letter, one lowercase letter, one number and one special character.(@$!%*?&)"
+          class="bg-transparent border border-white rounded-lg py-2 px-4 text-white w-full focus:outline-none focus:border-blue-800"
+        />
+        <i
+          class="fa-solid fa-eye absolute right-5 top-3.5 cursor-pointer"
+          id="eye"
+        ></i>
+      </div>
+
+      <input
+        type="text"
+        name="firstName"
+        id="firstName"
+        placeholder="First Name"
+        required
+        class="bg-transparent border border-white rounded-lg py-2 px-4 text-white w-full focus:outline-none focus:border-blue-800"
+      />
+
+      <input
+        type="text"
+        name="lastName"
+        id="lastName"
+        placeholder="Last Name"
+        required
+        class="bg-transparent border border-white rounded-lg py-2 px-4 text-white w-full focus:outline-none focus:border-blue-800"
+      />
+
+      <input
+        type="text"
+        name="email"
+        id="email"
+        placeholder="Email"
+        required
+        pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
+        class="bg-transparent border border-white rounded-lg py-2 px-4 text-white w-full focus:outline-none focus:border-blue-800"
+      />
+
+      <input
+        type="submit"
+        value="Sign Up"
+        class="bg-white border border-white rounded-lg py-2 px-4 w-full hover:bg-blue-400 hover:border-blue-400 hover:text-white"
+      />
+    </form>
+
+    <div class="w-full relative">
+      <button id="google-signin" class="bg-white text-black rounded-lg py-2 px-4 mt-4 w-full hover:cursor-pointer hover:bg-gray-200 text-lg" style="font-family: 'Roboto', sans-serif;">Sign in with Google</button>
+      <img src="https://static-00.iconduck.com/assets.00/google-icon-2048x2048-pks9lbdv.png" alt="google-icon" class="absolute cursor-pointer left-2" width="30px" height="30px" style="top: 23px;">
+    </div>
+    
+
+    <a href="/" class="text-black text-center hover:cursor-pointerc inline-block w-full mt-2">Already have an account? <span class="text-blue-500">Click Here!</span></a>
+  </div>
+
+  <script>
+    document.getElementById('eye').addEventListener('click', function (e) {
+    const password = document.getElementById('password'); const type =
+    password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type); });
+  </script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js"; 
+    import { GoogleAuthProvider, signInWithPopup, getAuth } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js"
+    const firebaseConfig = { 
+      apiKey: "AIzaSyCWublOrtGuABhRs0uGchXrN9VUyAzBdTY",
+      authDomain: "chatroom-8c3d6.firebaseapp.com", 
+      projectId: "chatroom-8c3d6",
+      storageBucket: "chatroom-8c3d6.appspot.com", 
+      messagingSenderId: "443528467152", 
+      appId: "1:443528467152:web:5458cc2148d656470ac4d5",
+      measurementId: "G-YXD1ZDBJ57"
+    }; 
+    
+    const app = initializeApp(firebaseConfig);
+
+    document.getElementById('google-signin').addEventListener('click', handleClick);
+
+    async function handleClick() {
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();    
+      provider.setCustomParameters({prompt: "select_account"});
+
+      try {
+        const result = await signInWithPopup(auth, provider);
+        var userEmail = result.user.email;
+        console.log(userEmail);
+
+        var userName = result.user.displayName;
+        console.log(userName);
+
+        var nameList = userName.split(/(\s+)/);
+
+        var firstName = nameList[0];
+        console.log(firstName);
+        var lastName = nameList[2];
+        console.log(lastName);
+
+        var newUsername = generateUsername(firstName, lastName);
+        var uid = result.user.uid;
+        console.log("UID", uid);
+
+        var password = '123';
+        console.log("password",password);
+
+        await sendData(newUsername, password, firstName, lastName,userEmail);
+  
+      }catch (error) {  
+        console.log(error);
+
+      }
+    };
+    function generateUsername(firstName, lastName){
+      var firstletter = firstName[0];
+      console.log(firstletter)
+
+      var fourLetters = lastName.substr(0,4).toLowerCase();
+      console.log(fourLetters);
+
+      var randomNumber = Math.floor(Math.random() * 900) + 100;
+      console.log(randomNumber);
+
+      randomNumber.toString();
+
+      var username = firstletter + fourLetters + randomNumber;
+      console.log(username);
+
+      return username;
+    }
+    async function sendData(username, password, firstName, lastName, userEmail){
+      try{
+        const response = await fetch('/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: username,
+            password: password,
+            firstName: firstName,
+            lastName: lastName,
+            email: userEmail
+          })
+        });
+        window.location.href='/profile'
+      }catch(error){
+        console.log(error, "Error Sending user Data to backend");
+      }
+    }
+
+  </script>
+</body>
