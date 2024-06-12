@@ -40,7 +40,7 @@ function handle(e) {
 
 let refresh = setInterval(async () => {
   try {
-    const res = await fetch(`http://127.0.0.1:8080/room/${roomId}/messages`);
+    const res = await fetch(`http://localhost:8080/room/${roomId}/messages`);
     if (res.ok) {
       const chatbox = document.getElementById("chatContent");
       chatbox.innerHTML = "";

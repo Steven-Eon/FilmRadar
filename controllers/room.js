@@ -2,7 +2,7 @@ const User = require("../models/user");
 
 
 async function getRoom(req, res) {
-  const redirectURL = `http://127.0.0.1:8080/room/${req.params.roomName}/search`;
+  const redirectURL = `http://localhost:8080/room/${req.params.roomName}/search`;
   const email = req.cookies.email; // Assuming you store email in cookies
   const user = await User.findOne({ email });
 
